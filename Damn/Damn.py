@@ -1,6 +1,6 @@
 ﻿import sys
 from tkinter import SEL
-from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QMessageBox
+from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QMessageBox, QPushButton, QGridLayout
 
 class MainApp(QWidget):
     # 调用函数与模块
