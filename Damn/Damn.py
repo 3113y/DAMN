@@ -1,7 +1,7 @@
 ﻿import sys
 from tkinter import SEL
-from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QMessageBox, QPushButton, QGridLayout
-
+from PyQt5.QtWidgets import QApplication, QWidget, QInputDialog, QMessageBox, QVBoxLayout, QPushButton, QGridLayout, QLabel
+from PyQt5.QtGui import QPixmap
 class MainApp(QWidget):
     # 调用函数与模块
     def __init__(self):
@@ -26,27 +26,37 @@ class MainApp(QWidget):
                 strs_arr = [0] * 6
                 # 显示颜色输入提示信息
                 for i in range(6):
-                    # 获取线颜色输入
-                    reply = QMessageBox.question(self, '输入提示', '线的颜色？', QMessageBox.White | QMessageBox.Red | QMessageBox.Yellow | QMessageBox.Blue | QMessageBox.Black)
-                    if ok:
-                        if reply==QMessageBox.White:
-                            strs_arr[i] = 1
-                        elif reply==QMessageBox.Red:
-                            strs_arr[i] = 2
-                        elif reply==QMessageBox.Yellow:
-                            strs_arr[i] = 3
-                        elif reply==QMessageBox.Blue:
-                            strs_arr[i] = 4
-                        else:
-                            strs_arr[i] = 5
-                    else:
-                        return
+                    # 创建一个自定义的 QMessageBox 用于选择颜色
+                    str_col_box = QMessageBox(self)
+                    str_col_box.setWindowTitle('输入提示')
+                    str_col_box.setText('线的颜色？')
+                    # 添加颜色按钮
+                    white_button = str_col_box.addButton("White", QMessageBox.ActionRole)
+                    red_button = str_col_box.addButton("Red", QMessageBox.ActionRole)
+                    yellow_button = str_col_box.addButton("Yellow", QMessageBox.ActionRole)
+                    blue_button = str_col_box.addButton("Blue", QMessageBox.ActionRole)
+                    black_button = str_col_box.addButton("Black", QMessageBox.ActionRole)
+                    cancel_button = str_col_box.addButton(QMessageBox.Cancel)
+                    # 显示消息框并等待用户操作
+                    reply = str_col_box.exec_()
+                    if reply == QMessageBox.Cancel:
+                        # 用户点击了取消按钮，可根据需求处理，这里简单跳过本次循环
+                        continue
+                    if str_col_box.clickedButton() == white_button:
+                        strs_arr[i] = 1
+                    elif str_col_box.clickedButton() == red_button:
+                        strs_arr[i] = 2
+                    elif str_col_box.clickedButton() == yellow_button:
+                        strs_arr[i] = 3
+                    elif str_col_box.clickedButton() == blue_button:
+                        strs_arr[i] = 4
+                    elif str_col_box.clickedButton() == black_button:
+                        strs_arr[i] = 5
                 if times == 0:
                     # 仅在第一次循环时询问序列号末位
                     serial_num_end, ok = QInputDialog.getInt(self, '输入提示', '输入序列号末位')
                     if not ok:
                         return
-
                 str_sum = 0  # 总线数
                 strs_num_sum = [0] * 6  # 分别为白红黄蓝黑
                 strs_arr_rem0 = [0] * 6  # 统计去0以后的线序所用数组
@@ -109,12 +119,47 @@ class MainApp(QWidget):
             car_con = None
             frk_con = None
             for times in range(times_but):
-                col_but, ok = QInputDialog.getInt(self, '输入提示', '白红黄蓝分别为1234')
-                if not ok:
-                    return
-                char_but, ok = QInputDialog.getInt(self, '输入提示', '中止按住引爆分别为123')
-                if not ok:
-                    return
+                but_col_box = QMessageBox(self)
+                but_col_box.setWindowTitle('输入提示')
+                but_col_box.setText('线的颜色？')
+                # 添加颜色按钮
+                white_button = but_col_box.addButton("White", QMessageBox.ActionRole)
+                red_button = but_col_box.addButton("Red", QMessageBox.ActionRole)
+                yellow_button = but_col_box.addButton("Yellow", QMessageBox.ActionRole)
+                blue_button = but_col_box.addButton("Blue", QMessageBox.ActionRole)
+                cancel_button = but_col_box.addButton(QMessageBox.Cancel)
+                # 显示消息框并等待用户操作
+                reply = but_col_box.exec_()
+                if reply == QMessageBox.Cancel:
+                    # 用户点击了取消按钮，可根据需求处理，这里简单跳过本次循环
+                    continue
+                if but_col_box.clickedButton() == white_button:
+                    col_but = 1
+                elif but_col_box.clickedButton() == red_button:
+                    col_but = 2
+                elif but_col_box.clickedButton() == yellow_button:
+                    col_but = 3
+                elif but_col_box.clickedButton() == blue_button:
+                    col_but = 4
+                but_char_box = QMessageBox(self)
+                but_char_box.setWindowTitle('输入提示')
+                but_char_box.setText('按钮上的字？')
+                # 添加字按钮
+                discontinue_button = but_char_box.addButton("中止", QMessageBox.ActionRole)
+                hold_button = but_char_box.addButton("按住", QMessageBox.ActionRole)
+                detonate_button = but_char_box.addButton("引爆", QMessageBox.ActionRole)
+                cancel_button = but_char_box.addButton(QMessageBox.Cancel)
+                # 显示消息框并等待用户操作
+                reply = but_char_box.exec_()
+                if reply == QMessageBox.Cancel:
+                    # 用户点击了取消按钮，可根据需求处理，这里简单跳过本次循环
+                    continue
+                if but_char_box.clickedButton() == discontinue_button:
+                    char_but = 1
+                elif but_char_box.clickedButton() == hold_button:
+                    char_but = 2
+                elif but_char_box.clickedButton() == detonate_button:
+                    char_but = 3
                 if times == 0:
                     # 仅在第一次循环时询问电池数量、CAR状态和FRK状态
                     bat_num, ok = QInputDialog.getInt(self, '输入提示', '电池数量')
@@ -255,6 +300,80 @@ class MainApp(QWidget):
                     QMessageBox.information(self, '结果', f'按下第{rem_stage_site[3]}个位置按钮并输入该数字')
                 else:
                     QMessageBox.information(self, '结果', f'按下第{rem_stage_site[2]}个位置按钮并输入该数字')
+    # 迷宫模块
+    def maze_module(self):
+        # 获取迷宫模块个数
+        times_maz, ok = QInputDialog.getInt(self, '输入提示', '迷宫模块个数')
+        if ok:
+            for times in range(times_maz):
+                # 创立下文用来记住点到的按钮位置的数组和其他变量
+                mark_site=[0,0]
+                maze_click_count = 0
+                # 创建网格布局
+                grid = QGridLayout()
+                # 循环创建 6x6 的按钮
+                for row in range(6):
+                     for col in range(6):
+                     # 创建按钮，按钮文本显示其位置
+                        button = QPushButton(f'({row}, {col})')
+                        # 为按钮的点击信号连接槽函数，并传递按钮的行和列信息
+                        button.clicked.connect(lambda _, r=row, c=col: self.on_button_click(r, c))
+                        # 将按钮添加到网格布局中
+                        grid.addWidget(button, row, col)
+                # 将网格布局设置为窗口的布局
+                self.setLayout(grid)
+                # 设置窗口的标题和初始大小
+                self.setWindowTitle('按下两个标识方块所在的位置')
+                window = QWidget()
+                def on_button_click(self, row, col):
+                # 当按钮被点击时，记录按钮的相对横轴的位置
+                    mark_site[maze_click_count] = row
+                    maze_click_count += 1
+                # 选择图片用到的变量
+                pic_name = 0
+                # 筛选出需要的照片的名称
+                if mark_site[0]==1:
+                    if mark_site[1]==1:
+                        pic_name=11
+                    elif mark_site[1]==3:
+                        pic_name=13
+                    else:
+                        pic_name=16
+                elif mark_site[0]==2:
+                    if mark_site[1]==2:
+                        pic_name=22
+                    else:
+                        pic_name=25
+                elif mark_site[0]==3:
+                    if mark_site[1]==4:
+                        pic_name=34
+                    else:
+                        pic_name=35
+                else:
+                    if mark_site[1]==5:
+                        pic_name=45
+                    else:
+                        pic_name=46
+                layout = QVBoxLayout()
+                file_name=f"E:\Homeworks\Damn\pictures\{pic_name}.jpg"
+                self.file_name = file_name
+                # 创建标签用于显示图片
+                self.image_label = QLabel(self)
+                layout.addWidget(self.image_label)
+                self.setLayout(layout)
+                self.setWindowTitle('图片选择器')
+                # 加载并显示图片
+                self.load_and_display_image()
+    def load_and_display_image(self):
+        try:
+            pixmap = QPixmap(self.file_name)
+            if pixmap.isNull():
+                print(f"无法加载图片: {self.file_name}")
+            else:
+                self.image_label.setPixmap(pixmap)
+                self.resize(pixmap.width(), pixmap.height())
+        except Exception as e:
+            print(f"加载图片时出现错误: {e}")
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
