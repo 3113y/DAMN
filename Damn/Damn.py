@@ -6,16 +6,40 @@ class MainApp(QWidget):
     # 调用函数与模块
     def __init__(self):
         super().__init__()
-        # 线路模块处理
-        self.line_module()
-        # 按钮模块处理
-        self.button_module()
-        # 四色方块模块处理
-        self.four_color_block_module()
-        # 记忆模块处理
-        self.memory_module()
-        # 迷宫模块处理
-        self.maze_module()
+        self.switch_module
+    def switch_module(self):
+        # 创建一个自定义的 QMessageBox 用于选择模块
+        str_col_box = QMessageBox(self)
+        str_col_box.setWindowTitle('选择模块')
+        str_col_box.setText('哪个模块？')
+        # 添加模块按钮
+        line_module_button = str_col_box.addButton("line_module", QMessageBox.ActionRole)
+        button_module_button = str_col_box.addButton("button_module", QMessageBox.ActionRole)
+        four_color_block_module_button = str_col_box.addButton("four_color_block_module", QMessageBox.ActionRole)
+        memory_module_button = str_col_box.addButton("memory_module", QMessageBox.ActionRole)
+        maze_module_button = str_col_box.addButton("maze_module", QMessageBox.ActionRole)
+        cancel_button = str_col_box.addButton(QMessageBox.Cancel)
+        # 显示消息框并等待用户操作
+        reply = str_col_box.exec_()
+        if reply == QMessageBox.Cancel:
+        # 用户点击了取消按钮，可根据需求处理，这里简单跳过本次循环
+            continue
+        if str_col_box.clickedButton() == line_module_button:
+            # 线路模块处理
+            self.line_module()
+        elif str_col_box.clickedButton() == button_module_button:
+            # 按钮模块处理
+            self.button_module()
+        elif str_col_box.clickedButton() == four_color_block_module_button:
+            # 四色方块模块处理
+            self.four_color_block_module()
+        elif str_col_box.clickedButton() ==  memory_module_button:
+            # 记忆模块处理
+            self.memory_module()
+        elif str_col_box.clickedButton() == maze_module_button:
+            # 迷宫模块处理
+            self.maze_module()
+
     # 线路模块
     def line_module(self):
         # 获取线路模块个数
@@ -110,6 +134,7 @@ class MainApp(QWidget):
                         QMessageBox.information(self, '结果', '最后一根线')
                     else:
                         QMessageBox.information(self, '结果', '第四根线')
+        self.switch_module
     # 按钮模块
     def button_module(self):
         # 获取按钮模块个数
@@ -192,6 +217,7 @@ class MainApp(QWidget):
                 else:
                     QMessageBox.information(self, '结果', '按住按钮，参考下文')
                 QMessageBox.information(self, '提示', '蓝色：在任意数位显示4时松开\n白色：在任意数位显示1时松开\n黄色：在任意数位显示5时松开\n其他颜色： 在任意数位显示1时松开')
+        self.switch_module
     # 四色方块模块
     def four_color_block_module(self):
         # 获取四色方块模块数
@@ -210,6 +236,7 @@ class MainApp(QWidget):
                     QMessageBox.information(self, '结果', '红-蓝，蓝-红，绿-黄，黄-绿')
                 else:
                     QMessageBox.information(self, '结果', '红-蓝，蓝-黄，绿-绿，黄-红')
+        self.switch_module
     # 记忆模块
     def memory_module(self):
         # 获取记忆模块个数
@@ -300,77 +327,62 @@ class MainApp(QWidget):
                     QMessageBox.information(self, '结果', f'按下第{rem_stage_site[3]}个位置按钮并输入该数字')
                 else:
                     QMessageBox.information(self, '结果', f'按下第{rem_stage_site[2]}个位置按钮并输入该数字')
+        self.switch_module
     # 迷宫模块
     def maze_module(self):
-        # 获取迷宫模块个数
+        self.mark_site = [0, 0]  # 定义为类的属性
+        self.maze_click_count = 0  # 定义为类的属性
         times_maz, ok = QInputDialog.getInt(self, '输入提示', '迷宫模块个数')
         if ok:
-            for times in range(times_maz):
-                # 创立下文用来记住点到的按钮位置的数组和其他变量
-                mark_site=[0,0]
-                maze_click_count = 0
-                # 创建网格布局
-                grid = QGridLayout()
-                # 循环创建 6x6 的按钮
-                for row in range(6):
-                     for col in range(6):
-                     # 创建按钮，按钮文本显示其位置
-                        button = QPushButton(f'({row}, {col})')
-                        # 为按钮的点击信号连接槽函数，并传递按钮的行和列信息
-                        button.clicked.connect(lambda _, r=row, c=col: self.on_button_click(r, c))
-                        # 将按钮添加到网格布局中
-                        grid.addWidget(button, row, col)
-                # 将网格布局设置为窗口的布局
-                self.setLayout(grid)
-                # 设置窗口的标题和初始大小
-                self.setWindowTitle('按下两个标识方块所在的位置')
-                window = QWidget()
-                def on_button_click(self, row, col):
-                # 当按钮被点击时，记录按钮的相对横轴的位置
-                    mark_site[maze_click_count] = row
-                    maze_click_count += 1
-                # 选择图片用到的变量
-                pic_name = 0
-                # 筛选出需要的照片的名称
-                if mark_site[0]==1:
-                    if mark_site[1]==1:
-                        pic_name=11
-                    elif mark_site[1]==3:
-                        pic_name=13
-                    else:
-                        pic_name=16
-                elif mark_site[0]==2:
-                    if mark_site[1]==2:
-                        pic_name=22
-                    else:
-                        pic_name=25
-                elif mark_site[0]==3:
-                    if mark_site[1]==4:
-                        pic_name=34
-                    else:
-                        pic_name=35
+            grid = QGridLayout()
+            for row in range(6):
+                for col in range(6):
+                    button = QPushButton(f'({row}, {col})')
+                    button.clicked.connect(lambda _, r=row, c=col: self.on_button_click(r, c))
+                    grid.addWidget(button, row, col)
+            self.setLayout(grid)
+            self.setWindowTitle('按下两个标识方块所在的位置')
+    def on_button_click(self, row, col):
+        self.mark_site[self.maze_click_count] = row
+        self.maze_click_count += 1
+        if self.maze_click_count == 2:
+            pic_name = 0
+            if self.mark_site[0] == 1:
+                if self.mark_site[1] == 1:
+                    pic_name = 11
+                elif self.mark_site[1] == 3:
+                    pic_name = 13
                 else:
-                    if mark_site[1]==5:
-                        pic_name=45
-                    else:
-                        pic_name=46
-                layout = QVBoxLayout()
-                file_name=f"E:\Homeworks\Damn\pictures\{pic_name}.jpg"
-                self.file_name = file_name
-                # 创建标签用于显示图片
-                self.image_label = QLabel(self)
-                layout.addWidget(self.image_label)
-                self.setLayout(layout)
-                self.setWindowTitle('图片选择器')
-                # 加载并显示图片
-                self.load_and_display_image()
+                    pic_name = 16
+            elif self.mark_site[0] == 2:
+                if self.mark_site[1] == 2:
+                    pic_name = 22
+                else:
+                    pic_name = 25
+            elif self.mark_site[0] == 3:
+                if self.mark_site[1] == 4:
+                    pic_name = 34
+                else:
+                    pic_name = 35
+            else:
+                if self.mark_site[1] == 5:
+                    pic_name = 45
+                else:
+                    pic_name = 46
+            file_name = r"pictures\{pic_name}.jpg".format(pic_name=pic_name)  # 使用原始字符串
+            self.file_name = file_name
+            self.load_and_display_image()
     def load_and_display_image(self):
         try:
             pixmap = QPixmap(self.file_name)
             if pixmap.isNull():
                 print(f"无法加载图片: {self.file_name}")
             else:
-                self.image_label.setPixmap(pixmap)
+                layout = QVBoxLayout()
+                image_label = QLabel(self)
+                image_label.setPixmap(pixmap)
+                layout.addWidget(image_label)
+                self.setLayout(layout)
                 self.resize(pixmap.width(), pixmap.height())
         except Exception as e:
             print(f"加载图片时出现错误: {e}")
